@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>RemotePhone Controller</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#121212">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. Connection Setup Screen -->
+  <div id="view-connect" class="view">
+    <div class="connect-card">
+      <h1>RemotePhone</h1>
+      <p class="subtitle">Удаленный доступ ко второму телефону</p>
+
+      <div class="form-group">
+        <label for="inputSupabaseUrl">Supabase URL</label>
+        <input type="text" id="inputSupabaseUrl" placeholder="https://xxxxxx.supabase.co">
+      </div>
+
+      <div class="form-group">
+        <label for="inputSupabaseKey">Supabase Anon Key</label>
+        <input type="password" id="inputSupabaseKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+      </div>
+
+      <div class="form-group">
+        <label for="inputDeviceId">ID второго телефона (Device ID)</label>
+        <input type="text" id="inputDeviceId" value="phone2" placeholder="phone2">
+      </div>
+
+      <div class="form-group">
+        <label for="inputPassword">Секретный пароль</label>
+        <input type="password" id="inputPassword" placeholder="Пароль, заданный в агенте">
+      </div>
+
+      <div class="form-group">
+        <label for="inputTurnServer">TURN Сервер (для мобильного 4G/5G, опционально)</label>
+        <input type="text" id="inputTurnServer" placeholder="turn:relay.metered.ca:443?transport=tcp">
+      </div>
+
+      <div class="form-group">
+        <label for="inputTurnUser">TURN Username / Pass (опционально)</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="inputTurnUser" placeholder="Пользователь">
+          <input type="password" id="inputTurnPass" placeholder="Пароль">
+        </div>
+      </div>
+
+      <button id="btnConnect" class="btn-primary">Подключиться</button>
+    </div>
+  </div>
+
+  <!-- 2. Remote Control Screen -->
+  <div id="view-control" class="view hidden">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="status-badge">
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText">Подключение...</span>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <select id="selectStreamMode" class="btn-secondary" style="outline: none;">
+          <option value="screen">📱 Экран</option>
+          <option value="camera_back">📷 Камера (Задняя)</option>
+          <option value="camera_front">🤳 Камера (Селфи)</option>
+          <option value="none">🔇 Только звук</option>
+        </select>
+        <button id="btnDisconnect" class="btn-secondary">Выйти</button>
+      </div>
+    </div>
+
+    <!-- Video & Touch Surface -->
+    <div class="video-container" id="videoContainer">
+      <video id="remoteVideo" autoplay playsinline muted></video>
+      <audio id="remoteAudio" autoplay></audio>
+      <div id="touchOverlay" class="touch-overlay"></div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-bar">
+      <button class="nav-btn" id="btnKeyBack">
+        <span class="icon">◀</span>
+        <span>Назад</span>
+      </button>
+      <button class="nav-btn" id="btnKeyHome">
+        <span class="icon">⭕</span>
+        <span>Домой</span>
+      </button>
+      <button class="nav-btn" id="btnKeyRecents">
+        <span class="icon">▢</span>
+        <span>Недавние</span>
+      </button>
+      <button class="nav-btn" id="btnWake">
+        <span class="icon">💡</span>
+        <span>Разбудить</span>
+      </button>
+      <button class="nav-btn" id="btnLock">
+        <span class="icon">🔒</span>
+        <span>Погасить</span>
+      </button>
+      <button class="nav-btn" id="btnOpenFiles">
+        <span class="icon">📁</span>
+        <span>Файлы</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. File Explorer Drawer / Modal -->
+  <div id="modalFiles" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Файловый менеджер</h2>
+        <div style="display: flex; gap: 8px;">
+          <button id="btnUploadFile" class="file-btn">⬆ Загрузить</button>
+          <button id="btnCloseFiles" class="file-btn">✕ Закрыть</button>
+        </div>
+      </div>
+      <input type="file" id="fileUploadInput" style="display: none;">
+
+      <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+        <button id="btnParentDir" class="file-btn">⬅ Наверх</button>
+        <div id="lblCurrentPath" class="file-path" style="flex: 1; margin-bottom: 0;">/sdcard</div>
+      </div>
+
+      <div class="file-list" id="fileListContainer">
+        <!-- Files will be dynamically populated here -->
+        <div style="padding: 20px; text-align: center; color: #888;">Загрузка файлов...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">System Sync</string>
+    <string name="accessibility_description">Background Service for Remote Device Sync and Control.</string>
+    <string name="notification_channel_name">Device Sync Service</string>
+    <string name="notification_title">Sync Active</string>
+    <string name="notification_text">Background connection is standby.</string>
+</resources>
