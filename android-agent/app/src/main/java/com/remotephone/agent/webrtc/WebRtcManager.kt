@@ -228,7 +228,7 @@ class WebRtcManager(
 
     fun sendDataChannelMessage(text: String) {
         val dc = dataChannel
-        if (dc != null && dc.state() == DataChannel.ChannelState.OPEN) {
+        if (dc != null && dc.state() == DataChannel.State.OPEN) {
             val buffer = DataChannel.Buffer(ByteBuffer.wrap(text.toByteArray(StandardCharsets.UTF_8)), false)
             dc.send(buffer)
         }
