@@ -91,22 +91,25 @@
     setStatus(false, 'Подключение к сигналингу...');
 
     const host = cfg.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    const wsUrl = `wss://${host}/realtime/v1/websocket?apikey=${encodeURIComponent(cfg.key)}&vsn=2.0.0`;
+    const wsUrl = `wss://${host}/realtime/v1/websocket?apikey=${encodeURIComponent(cfg.key)}`;
 
     ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
-      setStatus(false, 'Связь с облаком установлена. Поиск телефона...');
+      setStatus(false, 'Связь с облаком установлена. Подключение к каналу...');
       joinChannel(cfg.deviceId);
       heartbeatTimer = setInterval(sendHeartbeat, 25000);
-
-      // Initialize WebRTC
-      initPeerConnection(cfg);
     };
 
     ws.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data);
+        if (msg.event === 'phx_reply' && msg.payload && msg.payload.status === 'ok') {
+          setStatus(false, 'Канал открыт. Ожидание ответа телефона...');
+          // Wake screen and start WebRTC offer
+          sendSignal({ action: 'wake' });
+          setTimeout(() => initPeerConnection(cfg), 200);
+        }
         if (msg.event === 'broadcast' && msg.payload && msg.payload.event === 'signal') {
           handleSignal(msg.payload.payload);
         }

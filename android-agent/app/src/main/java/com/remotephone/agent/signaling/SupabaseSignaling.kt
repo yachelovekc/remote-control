@@ -58,7 +58,7 @@ class SupabaseSignaling(
 
         val rawUrl = config.supabaseUrl
         val host = rawUrl.replace("https://", "").replace("http://", "").removeSuffix("/")
-        val wsUrl = "wss://$host/realtime/v1/websocket?apikey=${config.supabaseAnonKey}&vsn=2.0.0"
+        val wsUrl = "wss://$host/realtime/v1/websocket?apikey=${config.supabaseAnonKey}"
 
         val request = Request.Builder()
             .url(wsUrl)
